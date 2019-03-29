@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CallsHistory.Models
@@ -15,7 +16,6 @@ namespace CallsHistory.Models
 
         public string DstName { get; set; }
 
-
         public DateTime CallDate { get; set; }
 
         public int Duration { get; set; }
@@ -29,6 +29,9 @@ namespace CallsHistory.Models
             CallDate = call.CallDate;
             Duration = call.Duration;
             Disposition = call.Disposition;
+
+
+           
         }
     }
 }

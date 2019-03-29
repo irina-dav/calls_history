@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CallsHistory.Repositories;
 using CallsHistory.Models;
+using CallsHistory.Services;
 
 namespace CallsHistory.Controllers
 {
@@ -17,6 +18,7 @@ namespace CallsHistory.Controllers
         {
             repo = repository;
             usersRepo = usersRepository;
+           
         }
 
         public ViewResult Index()
@@ -37,10 +39,9 @@ namespace CallsHistory.Controllers
             return PartialView("_Calls", calls.Select(c => new CallViewModel(c)
             {
                 DstName = usersRepo.GetUser(c.Dst.ToString())?.Name,
-                SrcName = usersRepo.GetUser(c.Src.ToString())?.Name
+                SrcName = repo.GetCallerName(c)
             }));
         }
-
 
     }
 }

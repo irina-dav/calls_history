@@ -11,6 +11,8 @@ namespace CallsHistory.Repositories
         IEnumerable<Call> Calls { get; }
 
         IEnumerable<Call> SearchCalls(CallsFilter filter);
+
+        string GetCallerName(Call call);
     }
 
     public interface IUsersRepository

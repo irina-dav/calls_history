@@ -14,7 +14,7 @@ namespace CallsHistory.Models
         [Column("sequence")]
         public int Id { get; set; }        
 
-        [Column("src")]
+        [Column("cnum")]
         public string Src { get; set; }
 
         [Column("dst")]
@@ -28,5 +28,8 @@ namespace CallsHistory.Models
 
         [Column("disposition")]
         public string Disposition { get; set; }
+
+        [Column("cnam")]
+        public string SrcName { get; set; }
     }
 }

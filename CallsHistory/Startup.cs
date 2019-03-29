@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using CallsHistory.Services;
 
 namespace CallsHistory
 {
@@ -35,6 +36,8 @@ namespace CallsHistory
 
             services.AddTransient<IRepository, EFRepository>();
             services.AddTransient<IUsersRepository, EFUserRepository>();
+
+            services.AddScoped<TextService>();
 
             services.AddMvc();
             services.AddHttpContextAccessor();
