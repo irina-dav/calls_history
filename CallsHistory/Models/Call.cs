@@ -11,8 +11,8 @@ namespace CallsHistory.Models
     public class Call
     {
         [Key]
-        [Column("sequence")]
-        public int Id { get; set; }        
+        [Column("linkedid")]
+        public string Id { get; set; }        
 
         [Column("cnum")]
         public string Src { get; set; }

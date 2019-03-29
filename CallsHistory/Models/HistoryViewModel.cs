@@ -9,7 +9,8 @@ namespace CallsHistory.Models
     {
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
-        public int CallNumber { get; set; }
+        public string SrcCallNumber { get; set; }
+        public string DstCallNumber { get; set; }
 
         public bool GroupBy { get; set; }
     }

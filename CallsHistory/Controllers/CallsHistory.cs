@@ -35,12 +35,13 @@ namespace CallsHistory.Controllers
         [HttpPost]
         public IActionResult SearchCalls(CallsFilter filter)
         {
-            List<Call> calls = repo.SearchCalls(filter).ToList();            
-            return PartialView("_Calls", calls.Select(c => new CallViewModel(c)
+            List<Call> calls = repo.SearchCalls(filter).ToList();  
+            var callsVm = calls.Select(c => new CallViewModel(c)
             {
                 DstName = usersRepo.GetUser(c.Dst.ToString())?.Name,
                 SrcName = repo.GetCallerName(c)
-            }));
+            });
+            return PartialView("_Calls", callsVm);
         }
 
     }

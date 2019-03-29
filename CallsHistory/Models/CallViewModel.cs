@@ -28,10 +28,7 @@ namespace CallsHistory.Models
             Dst = call.Dst;
             CallDate = call.CallDate;
             Duration = call.Duration;
-            Disposition = call.Disposition;
-
-
-           
+            Disposition = call.Disposition;   
         }
     }
 }

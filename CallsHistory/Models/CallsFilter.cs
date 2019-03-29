@@ -9,6 +9,7 @@ namespace CallsHistory.Models
     {
         public DateTime CallDateFrom { get; set; }
         public DateTime CallDateTo { get; set; }
-        public string CallNumber { get; set; }
+        public string SrcCallNumber { get; set; }       
+        public string DstCallNumber { get; set; }
     }
 }

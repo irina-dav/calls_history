@@ -33,10 +33,12 @@ namespace CallsHistory.Repositories
 
         public IEnumerable<Call> SearchCalls(CallsFilter filter)
         {
-            List<Call> calls = Calls.Where(c => 
-                c.CallDate >= filter.CallDateFrom && c.CallDate < filter.CallDateTo && 
-                (c.Dst == filter.CallNumber || c.Src == filter.CallNumber)).ToList();
-
+          //  var test = Calls.Where(c => c.Id == 27162);
+            var calls = Calls.Where(c => c.CallDate >= filter.CallDateFrom && c.CallDate < filter.CallDateTo).ToList();
+            if (!string.IsNullOrWhiteSpace(filter.SrcCallNumber))
+                calls = calls.Where(c => c.Src==filter.SrcCallNumber).ToList();
+            if (!string.IsNullOrWhiteSpace(filter.DstCallNumber))
+                calls = calls.Where(c => c.Dst.Equals(filter.DstCallNumber)).ToList();
             return calls;
         }
 
