@@ -1,0 +1,34 @@
+﻿.groupBy {
+    font-weight: bold;
+    text-align: left;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* Progress Loading */
+#circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 80px;
+    height: 80px;
+}
+
+.loader {
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    border: 4px solid #0F3605;
+    border-top: 4px solid #3C7300;
+    border-radius: 50%;
+    animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* Progress Loading */

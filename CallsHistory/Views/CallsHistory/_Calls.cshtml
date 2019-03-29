@@ -1,0 +1,82 @@
+﻿@model IEnumerable<CallViewModel>
+
+<div id="toolbar" class="small">
+    <h5>Количество звонков: @Model.Count()</h5>
+</div>
+<table id="list" class="table table-hover table-sm table-bordered small w-auto col-10"
+       data-toggle="table"
+       data-toolbar="#toolbar"            
+       data-sortable="true"
+       data-sort-name="callDate"
+       data-custom-sort="customSort"
+       data-sort-order="desc"
+       data-show-export="true"
+       data-pagination="false"
+       data-search="false">
+    <thead>
+        <tr>
+            <th data-field="src" data-width='10%' data-sortable="true">От</th>
+            <th data-field="srcName" data-width='20%' data-sortable="true">От (Имя)</th>
+            <th data-field="dst" data-width='10%' data-sortable="true">Кому</th>
+            <th data-field="dstName" data-width='20%' data-sortable="true">Кому (Имя)</th>
+            <th data-field="callDate" data-width='20%' data-sortable="true">Дата звонка</th>
+            <th data-field="duration" data-width='20%' data-sortable="true">Длительность</thdata-field="callDate">
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (CallViewModel call in Model)
+        {
+        <tr>
+            <td>@call.Src</td>
+            <td>@call.SrcName</td>
+            <td>@call.Dst</td>
+            <td>@call.DstName</td>
+            <td>@call.CallDate</td>
+            <td>@call.Duration</td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script>
+
+    function ConvertToDate(s) {
+        var b = s.split(/\D/);
+        return new Date(b[2], b[1] - 1, b[0], b[3], b[4]);
+    };
+
+    function customSort(sortName, sortOrder, data) {
+        var order = sortOrder === 'desc' ? -1 : 1
+        data.sort(function (a, b) {
+            var aa = a[sortName];
+            var bb = b[sortName];
+            if (sortName > '' && sortName.endsWith('Date')) {
+                aa = ConvertToDate(aa);
+                bb = ConvertToDate(bb);
+            }
+            if (aa < bb) {
+                return order * -1
+            }
+            if (aa > bb) {
+                return order
+            }
+            return 0
+        })
+    }
+
+    $(document).ready(function () {
+
+        var table = $('#list');
+        table.bootstrapTable();
+
+        function CountRows() {
+            var table = $('#list');
+            console.log($(table).find('.groupBy').length);
+            $(table).find('.groupBy').each(function (index, value) {
+                var groupRowCount = 0;
+                groupRowCount = $(this).nextUntil(".groupBy").length;
+                var td = $(this).children('td');
+                $(td).html($(td).html() + " [" + groupRowCount + "]");
+            });
+        }
+    });
+</script>

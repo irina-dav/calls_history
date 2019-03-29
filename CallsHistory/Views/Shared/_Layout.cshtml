@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" asp-href-include="~/lib/font-awesome/css/*.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-table/bootstrap-table.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.css" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/tooltips.css" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/tableexport/tableExport.min.js"></script>
+    <script src="~/lib/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="~/lib/bootstrap-table/extensions/group-by-v2/bootstrap-table-group-by.min.js"></script>
+    <script src="~/lib/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
+
+    @RenderSection("head", false)
+    <title>Calls :: @ViewBag.Title</title>
+</head>
+
+<body>
+
+
+    <div id="main">
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success">@Html.Raw(@TempData["message"])</div>
+        }
+        @if (TempData["warning"] != null)
+        {
+            <div class="alert alert-danger">@Html.Raw(@TempData["warning"])</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" role="alert">@Html.Raw(@TempData["Error"])</div>
+        }
+        @RenderBody()
+    </div>
+</body>
+</html>

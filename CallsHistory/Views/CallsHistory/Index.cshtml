@@ -1,0 +1,104 @@
+﻿@model HistoryViewModel
+@{
+    Layout = "_Layout";
+}
+@section head {
+}
+<div class="container col-11 pt-3 pb-5">
+    <h2>История телефонных звонков</h2>
+    <form id="searchForm" class="small col-6 needs-validation was-validated" novalidate>
+        <div class="form-row col-6 align-content-sm-start">
+            <div class="form-group col-6">             
+                <label class="col-form-label" for="DateFrom">Период с</label>
+                <input type="date" required class="form-control form-control-sm rounded-0" asp-for="DateFrom" />
+                <div class="invalid-feedback">Укажите дату</div>
+            </div>
+            <div class="form-group col-6">
+                <label class="col-form-label" for="DateTo">Период по</label>
+                <input type="date" required class="form-control form-control-sm rounded-0" asp-for="DateTo" />
+                <div class="invalid-feedback">Укажите дату</div>
+            </div>
+        </div>
+        <div class="form-row col-6 align-content-sm-start">
+            <div class="form-group col-6">
+                <label class="col-form-label" for="CallNumber">Внутренний номер</label>
+                <input type="text" required value="" class="form-control form-control-sm rounded-0" asp-for="CallNumber" />
+                <div class="invalid-feedback">Укажите номер телефона</div>
+            </div>
+        </div>
+
+       
+
+        <div class="form-group col-6 pt-5">
+            <input id="btnFilter" type="button" class="form-control form-control-sm btn btn-success btn-sm rounded-0 col-6" value="Сформировать" />
+        </div>
+    </form>
+    <partial name="_LoadingProgress" />
+    <div id="calls"> </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').each(function () {
+            var options = {
+                html: true
+            };
+            if ($(this)[0].hasAttribute('data-type')) {
+                options['template'] =
+                    '<div class="tooltip ' + $(this).attr('data-type') + '" role="tooltip">' +
+                    '	<div class="tooltip-arrow"></div>' +
+                    '	<div class="tooltip-inner"></div>' +
+                    '</div>';
+            }
+            $(this).tooltip(options);
+        });
+
+        var pleaseWait = $('#loadingProcess');
+
+        showPleaseWait = function () {
+            pleaseWait.modal('show');
+        };
+
+        hidePleaseWait = function () {
+            pleaseWait.modal('hide');
+        };
+
+        $('#btnFilter').on('click', function (e) {
+            SeacrhCalls();
+        });
+
+        function SeacrhCalls() {
+            var form = $("#searchForm")
+            if (form[0].checkValidity() === false) {
+                console.log("not validated");
+                return;
+
+            }
+            form.addClass('was-validated');
+
+            var filters = {
+                CallDateFrom: $('#DateFrom').val(),
+                CallDateTo : $('#DateTo').val(),
+                CallNumber: $('#CallNumber').val(),
+            };
+            console.log(filters);
+            showPleaseWait();
+            $.ajax({
+                url: '/CallsHistory/SearchCalls',
+                type: 'POST',
+                cache: false,
+                async: true,
+                dataType: "html",
+                data: filters
+            })
+                .done(function (result) {
+                    $('#calls').html(result);
+                    hidePleaseWait();
+                }).fail(function (xhr) {
+                    console.log('error : ' + xhr.status + ' - '
+                        + xhr.statusText + ' - ' + xhr.responseText);
+                });
+        }
+    });
+</script>
