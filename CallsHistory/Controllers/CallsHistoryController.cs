@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 using CallsHistory.Repositories;
 using CallsHistory.Models;
 using CallsHistory.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CallsHistory.Controllers
 {
-    public class CallsHistory : Controller
+    public class CallsHistoryController : Controller
     {
         private readonly IRepository repo;
         private readonly IUsersRepository usersRepo;
 
-        public CallsHistory(IRepository repository, IUsersRepository usersRepository)
+        public CallsHistoryController(IRepository repository, IUsersRepository usersRepository)
         {
             repo = repository;
             usersRepo = usersRepository;
            
         }
 
+        [Authorize]
         public ViewResult Index()
         {
             HistoryViewModel historyVM = new HistoryViewModel()
@@ -32,6 +34,7 @@ namespace CallsHistory.Controllers
             return View(historyVM);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult SearchCalls(CallsFilter filter)
         {

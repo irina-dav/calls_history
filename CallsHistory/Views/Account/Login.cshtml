@@ -1,0 +1,39 @@
+﻿@model LoginViewModel
+@{ Layout = "_Layout";}
+
+<div class="pt-5 container-center col-6">
+    
+            <div class="panel col-4 container-center justify-content-center text-center">
+                <h2>Вход в систему</h2>
+                <p>Укажите свой логин и пароль</p>
+            </div>
+            <div class="alert-danger text-center validation-summary-errors error rounded container-center col-4 p-0" asp-validation-summary="All"></div>
+            <form id="Login" asp-action="Login" method="post" novalidate class="col-4 container-center">
+                <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                <div class="form-group">
+                    <input type="text" required asp-for="Username" class="form-control form-control-sm" id="inputAccount" placeholder="Логин">
+                    <div class="invalid-feedback">Введите логин</div>
+                </div>
+                <div class="form-group">
+                    <input type="password" required asp-for="Password" class="form-control form-control-sm" id="inputPassword" placeholder="Пароль">
+                    <div class="invalid-feedback">Введите пароль</div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" id="btnSubmit" class="btn btn-outline-success btn-sm rounded-0" style="width: 80px">Вход</button>
+                </div>
+            </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function (event) {
+            var form = $("#Login")
+            if (form[0].checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.addClass('was-validated');
+        });       
+    });
+</script>

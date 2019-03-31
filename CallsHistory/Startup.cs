@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using CallsHistory.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using CallsHistory.Infrastucture;
 
 namespace CallsHistory
 {
@@ -27,6 +29,8 @@ namespace CallsHistory
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<LdapConfig>(Configuration.GetSection("ldap"));
+
             services.AddDbContext<AppDbContext>(options =>
                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -37,7 +41,19 @@ namespace CallsHistory
             services.AddTransient<IRepository, EFRepository>();
             services.AddTransient<IUsersRepository, EFUserRepository>();
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Account/AccessDeniedPath");
+            });
+
             services.AddScoped<TextService>();
+            services.AddScoped<LdapService>();
 
             services.AddMvc();
             services.AddHttpContextAccessor();
@@ -57,10 +73,11 @@ namespace CallsHistory
             app.UseStatusCodePages();
             app.UsePathBase(Configuration["PathBase"]);
             app.UseStaticFiles();
-
-            //app.UseSession();
-            //app.UseAuthentication();
-
+      
+            app.UseSession();
+            app.UseAuthentication();
+            app.UseCookiePolicy();
+          
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

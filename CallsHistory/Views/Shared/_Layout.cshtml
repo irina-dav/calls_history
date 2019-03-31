@@ -37,6 +37,16 @@
         {
             <div class="alert alert-danger" role="alert">@Html.Raw(@TempData["Error"])</div>
         }
+        <nav class="nav justify-content-end">
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            @inject LdapService LdapService
+            <div class="p-3">
+                <span class="small text-right mr-2">@LdapService.GetUserName()</span>
+                <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-secondary btn-sm rounded-0">Выход</a>
+            </div>
+        }    
+        </nav>
         @RenderBody()
     </div>
 </body>
