@@ -55,6 +55,7 @@ namespace CallsHistory
 
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
+            app.UsePathBase(Configuration["PathBase"]);
             app.UseStaticFiles();
 
             //app.UseSession();
@@ -65,9 +66,6 @@ namespace CallsHistory
                 routes.MapRoute(
                     name: "main",
                     template: "{controller=CallsHistory}/{action=Index}");
-                routes.MapRoute(
-                    name: "calls",
-                    template: "calls/{controller=CallsHistory}/{action=Index}");
             });
         }
     }

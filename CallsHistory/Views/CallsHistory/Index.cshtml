@@ -85,7 +85,7 @@
             console.log(filters);
             showPleaseWait();
             $.ajax({
-                url: '/CallsHistory/SearchCalls',
+                url: "@Url.Action("SearchCalls", "CallsHistory")",
                 type: 'POST',
                 cache: false,
                 async: true,

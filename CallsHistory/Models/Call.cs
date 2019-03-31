@@ -10,9 +10,13 @@ namespace CallsHistory.Models
     [Table("cdr")]
     public class Call
     {
-        [Key]
+        //[Key]
+        [Column("sequence")]
+        public int Id { get; set; }
+
+        //[Key]
         [Column("linkedid")]
-        public string Id { get; set; }        
+        public string LinkedId { get; set; }        
 
         [Column("cnum")]
         public string Src { get; set; }
