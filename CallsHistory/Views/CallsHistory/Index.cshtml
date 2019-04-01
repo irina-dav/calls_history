@@ -34,11 +34,100 @@
         </div>
     </form>
     <partial name="_LoadingProgress" />
-    <div id="calls"> </div>
+    <div id="calls"> <partial name="_Calls" model="@(new List<CallViewModel>())" /></div>
 </div>
 
 <script>
+
+    var Initial = true;
+
+
+    function ConvertToDate(s) {
+        var b = s.split(/\D/);
+        return new Date(b[2], b[1] - 1, b[0], b[3], b[4]);
+    };
+
+    function customSort(sortName, sortOrder, data) {
+        var order = sortOrder === 'desc' ? -1 : 1
+        data.sort(function (a, b) {
+            var aa = a[sortName];
+            var bb = b[sortName];
+            if (sortName > '' && sortName.endsWith('Date')) {
+                aa = ConvertToDate(aa);
+                bb = ConvertToDate(bb);
+            }
+            if (aa < bb) {
+                return order * -1
+            }
+            if (aa > bb) {
+                return order
+            }
+            return 0
+        })
+    }
+
+      function ajaxRequest(params) {
+        if (Initial) {
+            return params.success({
+                'total': 0,
+                'rows': null
+            })
+        }
+        var filters = {
+            CallDateFrom: $('#DateFrom').val(),
+            CallDateTo: $('#DateTo').val(),
+            SrcCallNumber: $('#SrcCallNumber').val(),
+            DstCallNumber: $('#DstCallNumber').val(),
+            Offset: params.data.offset,
+            Limit: params.data.limit,
+            Sort: params.data.sort,
+            Order: params.data.order
+        };
+        console.log("filter="+filters);
+        console.log("start filter");
+        showPleaseWait();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SearchCalls", "CallsHistory")",
+            data: filters,                
+            dataType: "json",
+
+            success: function (data) {
+                console.log("success");
+                hidePleaseWait();
+                params.success({                        
+                    'total': data.total,                        
+                    'rows': data.rows
+                })
+            },
+            error: function (er) {
+                console.log("error");
+                params.error(er);
+            }
+        });
+        }
+
+ 
+
     $(document).ready(function () {
+
+        formatCallsTable();
+
+        function formatCallsTable() {
+            var table = $('#list');
+            table.bootstrapTable('destroy').bootstrapTable({
+                formatLoadingMessage: function () {
+                    return 'Загрузка данных...';
+                },
+                formatNoMatches: function () {
+                    return 'Записей не найдено. Задайте параметры фильтра и нажмите кнопку Сформировать';
+                },
+                formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                    return 'Всего звонков: ' + totalRows + '. Показаны звонки с ' + pageFrom + ' по ' + pageTo;
+                }
+            });
+        }
+
         $('[data-toggle="tooltip"]').each(function () {
             var options = {
                 html: true
@@ -64,10 +153,33 @@
         };
 
         $('#btnFilter').on('click', function (e) {
-            SeacrhCalls();
+            var form = $("#searchForm")
+            if (form[0].checkValidity() === false) {
+                console.log("not validated");
+                return;
+
+            }
+            form.addClass('was-validated');
+
+            Initial = false;
+            formatCallsTable();
+            /*var table = $('#list');
+            table.bootstrapTable('destroy').bootstrapTable({
+                formatLoadingMessage: function () {
+                    return 'Загрузка данных...';
+                },
+                formatNoMatches: function () {
+                        return 'Записей не найдено. Задайте параметры фильтра и нажмите кнопку Сформировать';
+                    },
+                formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                    return 'Всего звонков: ' + totalRows + '. Показаны звонки с ' + pageFrom + ' по ' + pageTo;
+                }
+            });*/
         });
 
-        function SeacrhCalls() {
+        function SeacrhCalls(data) {
+            console.log("data:" + data);
+            return;
             var form = $("#searchForm")
             if (form[0].checkValidity() === false) {
                 console.log("not validated");
@@ -100,5 +212,10 @@
                         + xhr.statusText + ' - ' + xhr.responseText);
                 });
         }
+
+
+      
+
     });
 </script>
+

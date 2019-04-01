@@ -38,14 +38,26 @@ namespace CallsHistory.Controllers
         [HttpPost]
         public IActionResult SearchCalls(CallsFilter filter)
         {
-            List<Call> calls = repo.SearchCalls(filter).ToList();  
+            var searchResult = repo.SearchCalls(filter);
+            List<Call> calls = searchResult.CallsPage.ToList();  
             var callsVm = calls.Select(c => new CallViewModel(c)
             {
                 DstName = usersRepo.GetUser(c.Dst.ToString())?.Name,
                 SrcName = repo.GetCallerName(c)
             });
-            return PartialView("_Calls", callsVm);
+            // return PartialView("_Calls", callsVm);
+
+            var json = Json(new { total = searchResult.TotalCalls, rows = callsVm});
+            return json;
+
         }
 
-    }
+        [Authorize]
+        public JsonResult LoadData(int? pageSize, int? pageNumber, string sortOrder)
+        {
+            var calls = repo.Calls.TakeLast(100);
+            return Json(calls);
+        }
+
+        }
 }

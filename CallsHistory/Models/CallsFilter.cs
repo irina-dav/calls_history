@@ -11,5 +11,9 @@ namespace CallsHistory.Models
         public DateTime CallDateTo { get; set; }
         public string SrcCallNumber { get; set; }       
         public string DstCallNumber { get; set; }
+        public int Limit { get; set; }
+        public int Offset { get; set; }
+        public string Sort { get; set; }
+        public string Order { get; set; }
     }
 }

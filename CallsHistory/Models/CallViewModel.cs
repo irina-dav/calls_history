@@ -8,6 +8,13 @@ namespace CallsHistory.Models
 {
     public class CallViewModel
     {
+        static private Dictionary<string, string> desctinations = new Dictionary<string, string>
+        {
+            {"ANSWERED", "Отвечен" } ,
+            {"NO ANSWER", "Не отвечен" },
+            {"BUSY", "Линия занята"}
+        };
+
         public string Src { get; set; }
 
         public string SrcName { get; set; }
@@ -16,9 +23,9 @@ namespace CallsHistory.Models
 
         public string DstName { get; set; }
 
-        public DateTime CallDate { get; set; }
+        public string CallDate { get; set; }
 
-        public int Duration { get; set; }
+        public string Duration { get; set; }
         
         public string Disposition { get; set; }
 
@@ -26,9 +33,9 @@ namespace CallsHistory.Models
         {
             Src = call.Src;
             Dst = call.Dst;
-            CallDate = call.CallDate;
-            Duration = call.Duration;
-            Disposition = call.Disposition;   
+            CallDate = call.CallDate.ToString("dd.MM.yy HH:mm:ss");
+            Duration = TimeSpan.FromSeconds(call.Duration).ToString();
+            Disposition = desctinations.GetValueOrDefault(call.Disposition, call.Disposition);   
         }
     }
 }

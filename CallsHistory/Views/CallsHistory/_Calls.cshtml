@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<CallViewModel>
 
 <div id="toolbar" class="small">
-    <h5>Количество звонков: @Model.Count()</h5>
 </div>
 <table id="list" class="table table-hover table-sm table-bordered small w-auto col-10"
        data-toggle="table"
@@ -10,21 +9,28 @@
        data-sort-name="callDate"
        data-custom-sort="customSort"
        data-sort-order="desc"
+       data-silent-sort="false"
        data-show-export="true"
-       data-pagination="false"
+       data-ajax="ajaxRequest"
+       data-side-pagination="server"
+       data-pagination="true"
+       data-page-size="500"
+       data-pagination-v-align="both"
+       data-show-pagination-switch="false"
+       data-page-list="[]"
        data-search="false">
     <thead>
         <tr>
             <th data-width='10%' data-field="src" data-sortable="true">Кто звонил (номер) </th>
             <th data-width='20%' data-field="srcName" data-sortable="true">Кто звонил (имя)</th>
             <th data-width='10%' data-field="dst"  data-sortable="true">Кому звонил (номер)</th>
-            <th data-width='20%' data-field="dstName"  data-sortable="true">Кому (имя)</th>
-            <th data-width='15%'data-field="callDate" data-sortable="true">Дата звонка</th>
+            <th data-width='20%' data-field="dstName"  data-sortable="true">Кому звонил (имя)</th>
+            <th data-width='15%' data-field="callDate" data-sortable="true">Дата звонка</th>
             <th data-width='10%' data-field="duration" data-sortable="true">Длительность</th>
             <th data-width='15%' data-field="disposition" data-sortable="true">Статус</th>
         </tr>
     </thead>
-    <tbody>
+    @*<tbody>
         @foreach (CallViewModel call in Model)
         {
         <tr>
@@ -37,48 +43,18 @@
             <td>@call.Disposition</td>
         </tr>
         }
-    </tbody>
+    </tbody>*@
 </table>
 <script>
 
-    function ConvertToDate(s) {
-        var b = s.split(/\D/);
-        return new Date(b[2], b[1] - 1, b[0], b[3], b[4]);
-    };
 
-    function customSort(sortName, sortOrder, data) {
-        var order = sortOrder === 'desc' ? -1 : 1
-        data.sort(function (a, b) {
-            var aa = a[sortName];
-            var bb = b[sortName];
-            if (sortName > '' && sortName.endsWith('Date')) {
-                aa = ConvertToDate(aa);
-                bb = ConvertToDate(bb);
-            }
-            if (aa < bb) {
-                return order * -1
-            }
-            if (aa > bb) {
-                return order
-            }
-            return 0
-        })
-    }
+/*
+    var table = $('#list');
+    $('#list').bootstrapTable({
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
 
-    $(document).ready(function () {
-
-        var table = $('#list');
-        table.bootstrapTable();
-
-        function CountRows() {
-            var table = $('#list');
-            console.log($(table).find('.groupBy').length);
-            $(table).find('.groupBy').each(function (index, value) {
-                var groupRowCount = 0;
-                groupRowCount = $(this).nextUntil(".groupBy").length;
-                var td = $(this).children('td');
-                $(td).html($(td).html() + " [" + groupRowCount + "]");
-            });
+            return 'Показаны с ' + pageFrom + ' по ' + pageTo + ' всего звонков: ' + totalRows + ' ';
         }
-    });
+    });*/
+
 </script>
