@@ -6,92 +6,77 @@ using System.Threading.Tasks;
 using CallsHistory.Models;
 using CallsHistory.Services;
 using System.Linq.Dynamic.Core;
+using Microsoft.Extensions.Logging;
 
 namespace CallsHistory.Repositories
 {
     public class EFRepository : IRepository
     {
-        private AppDbContext context;
-        private DateTime problemEncodeStart = new DateTime(2019, 03, 04, 13, 30, 0);
-        private DateTime problemEncodeEnd = new DateTime(2020, 01, 01, 00, 0, 0);
-        private TextService textService;
+        private List<AppDbContext> contexts;
+        private ILogger<EFRepository> logger;
 
-        public EFRepository(AppDbContext context, TextService textService)
+        public EFRepository(TextService textService, IDbContextFactoryService dbFactory, ILogger<EFRepository> logger)
         {
-            this.context = context;
-            this.textService = textService;
+            contexts = dbFactory.CreateDbs<AppDbContext>("cds");
+            this.logger = logger;
         }
 
-        public IEnumerable<Call> Calls => context.Calls;
-
-        public string GetCallerName(Call call)
-        {
-            if (call.CallDate >= problemEncodeStart && call.CallDate <= problemEncodeEnd)
-                return textService.ContvertToUtf8(call.SrcName);
-            else
-                return call.SrcName;
-        }
-
+        public IQueryable<Call> Calls => contexts.SelectMany(c => c.Calls).AsQueryable();
+  
         public SearchResult SearchCalls(CallsFilter filter)
         {
-            //  var test = Calls.Where(c => c.Id == 27162);
-            /*  var calls = Calls.Where(c => c.CallDate >= filter.CallDateFrom && c.CallDate < filter.CallDateTo).ToList();
-              if (!string.IsNullOrWhiteSpace(filter.SrcCallNumber))
-                  calls = calls.Where(c => c.Src==filter.SrcCallNumber).ToList();
-              if (!string.IsNullOrWhiteSpace(filter.DstCallNumber))
-                  calls = calls.Where(c => c.Dst.Equals(filter.DstCallNumber)).ToList();
-              return calls;*/
+            logger.LogInformation($"SearchCalls with filter: dst={filter.DstCallNumber}, " +
+                $"src={filter.SrcCallNumber}, " +
+                $"dtFrom={filter.CallDateFrom}, " +
+                $"dtTo={filter.CallDateTo}");
 
-            
-                //var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
             var offset = filter.Offset;
             var pageSize = filter.Limit;
             var sortColumn = filter.Sort;
             var sortColumnDirection = filter.Order;
-            // var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-            /// var searchValue = Request.Form["search[value]"].FirstOrDefault();
 
-            // // int pageSize = limit != null ? Convert.ToInt32(Limit) : 0;
-            //int skip = offset != null ? Convert.ToInt32(offset) : 0;
-            //  int recordsTotal = 0;
-
-            var callsData = Calls.Where(c => c.CallDate >= filter.CallDateFrom && c.CallDate < filter.CallDateTo).AsQueryable();
-            if (!string.IsNullOrWhiteSpace(filter.SrcCallNumber))
-                callsData = callsData.Where(c => c.Src == filter.SrcCallNumber).AsQueryable();
-            if (!string.IsNullOrWhiteSpace(filter.DstCallNumber))
-                callsData = callsData.Where(c => c.Dst.Equals(filter.DstCallNumber)).AsQueryable();
+            IQueryable<Call> callsData = Enumerable.Empty<Call>().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.SrcCallNumber) && !string.IsNullOrWhiteSpace(filter.DstCallNumber))
+                callsData = contexts.SelectMany(x => x.Calls.Where(c => 
+                    c.CallDate >= filter.CallDateFrom  && c.CallDate < filter.CallDateTo 
+                    && c.Src == filter.SrcCallNumber
+                    && c.Dst == filter.DstCallNumber).AsQueryable()).AsQueryable();
+            else if (!string.IsNullOrWhiteSpace(filter.SrcCallNumber))
+                callsData = contexts.SelectMany(x => x.Calls.Where(c =>
+                    c.CallDate >= filter.CallDateFrom && c.CallDate < filter.CallDateTo
+                    && c.Src == filter.SrcCallNumber).AsQueryable()).AsQueryable();
+            else if (!string.IsNullOrWhiteSpace(filter.DstCallNumber))
+                callsData = contexts.SelectMany(x => x.Calls.Where(c =>
+                    c.CallDate >= filter.CallDateFrom && c.CallDate < filter.CallDateTo
+                    && c.Dst == filter.DstCallNumber).AsQueryable()).AsQueryable();
 
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-             {
+            {
                 callsData = callsData.OrderBy(sortColumn + " " + sortColumnDirection);
-             }
-             
-             int recordsTotal = callsData.Count();
+            }
 
-             var data = callsData.Skip(offset).Take(pageSize).ToList();
+            int recordsTotal = callsData.Count();
+            var data = callsData.Skip(offset).Take(pageSize).ToList();
 
-             return new SearchResult() { TotalCalls = recordsTotal, CallsPage = data };
-
+            return new SearchResult() { TotalCalls = recordsTotal, CallsPage = data };
         }
-
     }
 
     public class EFUserRepository : IUsersRepository
     {
-        private UserDbContext context;
+        private List<UserDbContext> contexts;
 
-        public EFUserRepository(UserDbContext context)
+        public EFUserRepository(IDbContextFactoryService dbFactory)
         {
-            this.context = context;
+            contexts = dbFactory.CreateDbs<UserDbContext>("asterisk");           
+            Users = contexts.SelectMany(c => c.Users).ToList();
         }
 
-
-        public IEnumerable<User> Users => context.Users;
+        public List<User> Users { get; }
 
         public User GetUser(string ext)
         {
             return Users.FirstOrDefault(u => u.Id == ext);
         }
-     
     }
 }

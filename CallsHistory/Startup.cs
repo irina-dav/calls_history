@@ -31,12 +31,20 @@ namespace CallsHistory
         {
             services.Configure<LdapConfig>(Configuration.GetSection("ldap"));
 
-            services.AddDbContext<AppDbContext>(options =>
+            /*services.AddDbContext<AppDbContext>(options =>
                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<UserDbContext>(options =>
-               options.UseMySql(Configuration.GetConnectionString("ConnectionAsterisk")));
-          
+               options.UseMySql(Configuration.GetConnectionString("ConnectionAsterisk")));*/
+
+            List<string> connStringsCdr = Configuration.GetSection("ConnectionStringsCdr").Get<List<string>>();
+            List<string> connStringsAsterisk = Configuration.GetSection("ConnectionStringsAsrerisk").Get<List<string>>();
+
+            services.AddSingleton<IDbContextFactoryService>(x => 
+                 new DbContextFactoryService(new Dictionary<string, List<string>>{{"cds", connStringsCdr },{ "asterisk", connStringsAsterisk}}, x.GetService<ILogger<DbContextFactoryService>>()));
+
+            // DbContextFactory.AddListConnectionString("cds", connStringsCdr);
+            // DbContextFactory.AddListConnectionString("asterisk", connStringsAsterisk);
 
             services.AddTransient<IRepository, EFRepository>();
             services.AddTransient<IUsersRepository, EFUserRepository>();
@@ -73,11 +81,11 @@ namespace CallsHistory
             app.UseStatusCodePages();
             app.UsePathBase(Configuration["PathBase"]);
             app.UseStaticFiles();
-      
+
             app.UseSession();
             app.UseAuthentication();
             app.UseCookiePolicy();
-          
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

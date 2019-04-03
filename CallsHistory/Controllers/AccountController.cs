@@ -24,6 +24,7 @@ namespace CallsHistory.Controllers
 
         public IActionResult Login(string returnUrl)
         {
+            ViewBag.Title = "Вход в систему";
             ViewBag.returnUrl = returnUrl;
             return View();
         }
@@ -54,7 +55,7 @@ namespace CallsHistory.Controllers
 
                         var principal = new ClaimsPrincipal(new ClaimsIdentity(userClaims, ldapService.GetType().Name, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType));
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                        return Redirect(returnUrl ?? Request.PathBase);
+                        return Redirect(returnUrl ?? Request.PathBase + "/");
                     }
                 }
                 catch (Exception ex)

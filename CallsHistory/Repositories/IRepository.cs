@@ -8,19 +8,15 @@ namespace CallsHistory.Repositories
 {
     public interface IRepository
     {
-        IEnumerable<Call> Calls { get; }
+        IQueryable<Call> Calls { get; }
 
         SearchResult SearchCalls(CallsFilter filter);
-
-        string GetCallerName(Call call);
     }
 
     public interface IUsersRepository
     {
-        IEnumerable<User> Users { get; }
+        List<User> Users { get; }
 
         User GetUser(string ext);
-       
-
     }
 }

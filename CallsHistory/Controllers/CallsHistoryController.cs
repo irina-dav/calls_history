@@ -19,14 +19,13 @@ namespace CallsHistory.Controllers
         {
             repo = repository;
             usersRepo = usersRepository;
-           
         }
 
         [Authorize]
         public ViewResult Index()
         {
             HistoryViewModel historyVM = new HistoryViewModel()
-            {                
+            {
                 DateFrom = DateTime.Now.AddDays(-1).Date,
                 DateTo = DateTime.Now.AddDays(1).Date,
             };
@@ -39,17 +38,15 @@ namespace CallsHistory.Controllers
         public IActionResult SearchCalls(CallsFilter filter)
         {
             var searchResult = repo.SearchCalls(filter);
-            List<Call> calls = searchResult.CallsPage.ToList();  
+            List<Call> calls = searchResult.CallsPage.ToList();
             var callsVm = calls.Select(c => new CallViewModel(c)
             {
                 DstName = usersRepo.GetUser(c.Dst.ToString())?.Name,
-                SrcName = repo.GetCallerName(c)
+                SrcName = usersRepo.GetUser(c.Src.ToString())?.Name
             });
-            // return PartialView("_Calls", callsVm);
 
-            var json = Json(new { total = searchResult.TotalCalls, rows = callsVm});
+            var json = Json(new { total = searchResult.TotalCalls, rows = callsVm });
             return json;
-
         }
 
         [Authorize]
@@ -59,5 +56,5 @@ namespace CallsHistory.Controllers
             return Json(calls);
         }
 
-        }
+    }
 }
