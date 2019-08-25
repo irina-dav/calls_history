@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace CallsHistory.Models
 {
-    public class UserDbContext : DbContext
+    public class AsteriskDbContext : DbContext
     {
-        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
+        public AsteriskDbContext(DbContextOptions<AsteriskDbContext> options) : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }    
     }
 }

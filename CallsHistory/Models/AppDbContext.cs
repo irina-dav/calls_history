@@ -17,6 +17,8 @@ namespace CallsHistory.Models
 
         public DbSet<Call> Calls { get; set; }
 
+        public int OffsetUTC { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Call>()

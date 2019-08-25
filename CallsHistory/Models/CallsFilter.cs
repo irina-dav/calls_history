@@ -15,5 +15,6 @@ namespace CallsHistory.Models
         public int Offset { get; set; }
         public string Sort { get; set; }
         public string Order { get; set; }
+        public int OffsetUTC { get; set; }
     }
 }

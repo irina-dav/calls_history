@@ -33,7 +33,7 @@ namespace CallsHistory.Models
         {
             Src = call.Src;
             Dst = call.Dst;
-            CallDate = call.CallDate.ToString("dd.MM.yy HH:mm:ss");
+            CallDate = call.CallDateUTC.ToString("dd.MM.yy HH:mm:ss");
             Duration = TimeSpan.FromSeconds(call.Duration).ToString();
             Disposition = desctinations.GetValueOrDefault(call.Disposition, call.Disposition);   
         }

@@ -35,5 +35,8 @@ namespace CallsHistory.Models
 
         [Column("cnam")]
         public string SrcName { get; set; }
+
+        [NotMapped]
+        public DateTime CallDateUTC { get; set; }
     }
 }

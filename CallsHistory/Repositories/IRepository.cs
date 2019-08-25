@@ -8,6 +8,8 @@ namespace CallsHistory.Repositories
 {
     public interface IRepository
     {
+        Dictionary<string, int> TimeZoneOffsets { get; set; }
+
         IQueryable<Call> Calls { get; }
 
         SearchResult SearchCalls(CallsFilter filter);

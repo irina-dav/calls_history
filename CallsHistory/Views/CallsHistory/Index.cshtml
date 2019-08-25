@@ -7,30 +7,36 @@
 <div class="container col-11 pb-5">
     <h2>История телефонных звонков</h2>
     <form id="searchForm" class="small col-6 needs-validation was-validated" novalidate>
-        <div class="form-row col-6 align-content-sm-start">
-            <div class="form-group col-6">
+        <div class="form-row col-9 align-content-sm-start">
+            <div class="form-group col-4">
                 <label class="col-form-label" for="DateFrom">Период с</label>
                 <input type="date" required class="form-control form-control-sm rounded-0" asp-for="DateFrom" />
                 <div class="invalid-feedback">Укажите дату</div>
             </div>
-            <div class="form-group col-6">
+            <div class="form-group col-4">
                 <label class="col-form-label" for="DateTo">Период по</label>
                 <input type="date" required class="form-control form-control-sm rounded-0" asp-for="DateTo" />
                 <div class="invalid-feedback">Укажите дату</div>
             </div>
+            <div class="form-group col-4">
+                <label class="col-form-label" for="TimeZonesOffsetUTC">Часовая зона</label>
+                <select asp-for="OffsetUTC" asp-items="@Model.TimeZonesOffsetUTC" class="form-control form-control-sm rounded-0"> </select>
+            </div>
+            
         </div>
-        <div class="form-row col-6 align-content-sm-start">
-            <div class="form-group col-6">
+        <div class="form-row col-9 align-content-sm-start">
+            <div class="form-group col-4">
                 <label class="col-form-label" for="CallNumber">Кто звонил (номер)</label>
                 <input type="text" value="" class="form-control form-control-sm rounded-0" asp-for="SrcCallNumber" />
             </div>
-            <div class="form-group col-6">
+            <div class="form-group col-4">
                 <label class="col-form-label" for="CallNumber">Кому звонил (номер)</label>
                 <input type="text" value="" class="form-control form-control-sm rounded-0" asp-for="DstCallNumber" />
             </div>
         </div>
         <div class="form-group col-6 pt-3">
             <input id="btnFilter" type="button" class="form-control form-control-sm btn btn-success btn-sm rounded-0 col-6" value="Сформировать" />
+           
         </div>
     </form>
     <partial name="_LoadingProgress" />
@@ -78,6 +84,7 @@
             CallDateTo: $('#DateTo').val(),
             SrcCallNumber: $('#SrcCallNumber').val(),
             DstCallNumber: $('#DstCallNumber').val(),
+            OffsetUTC: $('#OffsetUTC').val(),
             Offset: params.data.offset,
             Limit: params.data.limit,
             Sort: params.data.sort,

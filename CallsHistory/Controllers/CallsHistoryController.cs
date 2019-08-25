@@ -7,6 +7,8 @@ using CallsHistory.Repositories;
 using CallsHistory.Models;
 using CallsHistory.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections;
 
 namespace CallsHistory.Controllers
 {
@@ -28,6 +30,7 @@ namespace CallsHistory.Controllers
             {
                 DateFrom = DateTime.Now.AddDays(-1).Date,
                 DateTo = DateTime.Now.AddDays(1).Date,
+                TimeZonesOffsetUTC = new SelectList((IEnumerable)repo.TimeZoneOffsets, "Value", "Key", repo.TimeZoneOffsets.Keys.First())
             };
             ViewBag.Title = "История телефонных звонков";
             return View(historyVM);
@@ -42,7 +45,7 @@ namespace CallsHistory.Controllers
             var callsVm = calls.Select(c => new CallViewModel(c)
             {
                 DstName = usersRepo.GetUser(c.Dst.ToString())?.Name,
-                SrcName = usersRepo.GetUser(c.Src.ToString())?.Name
+                SrcName = usersRepo.GetUser(c.Src.ToString())?.Name,                
             });
 
             var json = Json(new { total = searchResult.TotalCalls, rows = callsVm });

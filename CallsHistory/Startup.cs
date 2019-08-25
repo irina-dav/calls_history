@@ -39,6 +39,10 @@ namespace CallsHistory
 
             List<string> connStringsCdr = Configuration.GetSection("ConnectionStringsCdr").Get<List<string>>();
             List<string> connStringsAsterisk = Configuration.GetSection("ConnectionStringsAsrerisk").Get<List<string>>();
+            Dictionary<string, int> serversOffsetsUTC = Configuration.GetSection("OffsetsUTC").Get<Dictionary<string, int>>();
+            Dictionary<string, int> timeZonesOffsetUTC = Configuration.GetSection("TimeZones").Get<Dictionary<string, int>>();
+
+            services.AddScoped<DateTimeService>(x => new DateTimeService(serversOffsetsUTC, timeZonesOffsetUTC));
 
             services.AddSingleton<IDbContextFactoryService>(x => 
                  new DbContextFactoryService(new Dictionary<string, List<string>>{{"cds", connStringsCdr },{ "asterisk", connStringsAsterisk}}, x.GetService<ILogger<DbContextFactoryService>>()));
