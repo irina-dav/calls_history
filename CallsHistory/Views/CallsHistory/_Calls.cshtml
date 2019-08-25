@@ -21,40 +21,15 @@
        data-search="false">
     <thead>
         <tr>
-            <th data-width='10%' data-field="src" data-sortable="true">Кто звонил (номер) </th>
-            <th data-width='20%' data-field="srcName" data-sortable="true">Кто звонил (имя)</th>
-            <th data-width='10%' data-field="dst"  data-sortable="true">Кому звонил (номер)</th>
-            <th data-width='20%' data-field="dstName"  data-sortable="true">Кому звонил (имя)</th>
-            <th data-width='15%' data-field="callDate" data-sortable="true">Дата звонка</th>
-            <th data-width='10%' data-field="duration" data-sortable="true">Длительность</th>
-            <th data-width='15%' data-field="disposition" data-sortable="true">Статус</th>
+            <th class="align-middle" data-width='10%' data-field="src" data-sortable="true">Кто звонил (номер) </th>
+            <th class="align-middle" data-width='20%' data-field="srcName" data-sortable="true">Кто звонил (имя)</th>
+            <th class="align-middle" data-width='10%' data-field="dst"  data-sortable="true">Кому звонил (номер)</th>
+            <th class="align-middle" data-width='20%' data-field="dstName"  data-sortable="true">Кому звонил (имя)</th>
+            <th class="align-middle" data-width='15%' data-field="callDate" data-sortable="true">Дата звонка <br /> (с учётом часового пояса)</th>
+            <th class="align-middle" data-width='10%' data-field="duration" data-sortable="true">Длительность</th>
+            <th class="align-middle" data-width='15%' data-field="disposition" data-sortable="true">Статус</th>
         </tr>
     </thead>
-    @*<tbody>
-        @foreach (CallViewModel call in Model)
-        {
-        <tr>
-            <td>@call.Src</td>
-            <td>@call.SrcName</td>
-            <td>@call.Dst</td>
-            <td>@call.DstName</td>
-            <td>@call.CallDate</td>
-            <td>@TimeSpan.FromSeconds(@call.Duration)</td>
-            <td>@call.Disposition</td>
-        </tr>
-        }
-    </tbody>*@
 </table>
 <script>
-
-
-/*
-    var table = $('#list');
-    $('#list').bootstrapTable({
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
-
-            return 'Показаны с ' + pageFrom + ' по ' + pageTo + ' всего звонков: ' + totalRows + ' ';
-        }
-    });*/
-
 </script>
